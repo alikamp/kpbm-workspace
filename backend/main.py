@@ -111,6 +111,15 @@ async def health():
     return {"status": "ok"}
 
 
+@app.get("/debug-db")
+async def debug_db():
+    try:
+        result = supabase.table("licenses").select("*").limit(1).execute()
+        return {"status": "ok", "data": result.data}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
+
+
 @app.post("/api/simulate")
 async def start_simulation(payload: SimulationRequest, background_tasks: BackgroundTasks):
     try:
