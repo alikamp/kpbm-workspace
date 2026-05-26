@@ -90,16 +90,28 @@ export default function LicenseGate({ onVerified }) {
         </div>
 
         {/* Pricing info */}
-        <div className="mt-6 border border-border rounded-xl p-6 bg-panel">
-          <p className="text-xs text-gray-500 leading-relaxed">
-            To request a{' '}
-            <span className="text-warn">24-hour single-use evaluation token</span>, or to extend a
-            production license for 30 days{' '}
-            <span className="text-white font-semibold">($7,995/mo)</span>, please contact
-            engineering administration. Payments accepted via managed verification link or
-            corporate Venmo transfer. Licenses are provisioned within 1 business day of
-            transaction clearance.
-          </p>
+        <div className="mt-6 border border-border rounded-xl p-6 bg-panel space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-white font-bold uppercase tracking-wider">Production License</p>
+              <p className="text-xs text-gray-500 mt-0.5">30-day access · unlimited simulations</p>
+            </div>
+            <span className="text-lg font-bold text-accent font-mono">$7,995<span className="text-xs text-gray-500">/mo</span></span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-white font-bold uppercase tracking-wider">Trial Token</p>
+              <p className="text-xs text-gray-500 mt-0.5">24-hour single-use evaluation</p>
+            </div>
+            <span className="text-sm font-bold text-warn font-mono">On Request</span>
+          </div>
+          <div className="border-t border-border pt-4">
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Payment via{' '}
+              <span className="text-white font-semibold">Venmo @alika-p</span>
+              {' '}or managed verification link. Licenses provisioned within 1 business day of transaction clearance.
+            </p>
+          </div>
         </div>
       </div>
     </div>
