@@ -106,7 +106,7 @@ def async_simulation_worker(job_id: str, req: SimulationRequest):
         }).eq("id", job_id).execute()
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health():
     return {"status": "ok"}
 
