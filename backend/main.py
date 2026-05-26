@@ -35,20 +35,38 @@ class SimulationRequest(BaseModel):
 
 
 def verify_license(license_code: str) -> bool:
-    result = supabase.table("licenses").select("*").eq("license_code", license_code).execute()
+    try:
+        result = supabase.table("licenses").select("*").eq("license_code", license_code).execute()
 
-    if not result.data:
+        if not result.data:
+            return False
+
+        lic = result.data[0]
+        now = datetime.now(timezone.utc)
+
+        expires_raw = lic.get("expires_at", "")
+        if not expires_raw:
+            return False
+
+        # Handle multiple timestamp formats from Supabase
+        expires_raw = expires_raw.replace("Z", "+00:00")
+        if "+" not in expires_raw and expires_raw.count("-") == 2:
+            expires_raw += "+00:00"
+        expires_at = datetime.fromisoformat(expires_raw)
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+
+        if lic.get("status") != "ACTIVE" or now > expires_at:
+            try:
+                supabase.table("licenses").update({"status": "EXPIRED"}).eq("license_code", license_code).execute()
+            except Exception:
+                pass
+            return False
+
+        return True
+    except Exception as e:
+        print(f"License verification error: {e}")
         return False
-
-    license = result.data[0]
-    now = datetime.now(timezone.utc)
-    expires_at = datetime.fromisoformat(license["expires_at"].replace("Z", "+00:00"))
-
-    if license["status"] != "ACTIVE" or now > expires_at:
-        supabase.table("licenses").update({"status": "EXPIRED"}).eq("license_code", license_code).execute()
-        return False
-
-    return True
 
 
 def async_simulation_worker(job_id: str, req: SimulationRequest):
@@ -95,7 +113,12 @@ async def health():
 
 @app.post("/api/simulate")
 async def start_simulation(payload: SimulationRequest, background_tasks: BackgroundTasks):
-    if not verify_license(payload.license_code):
+    try:
+        licensed = verify_license(payload.license_code)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"License check failed: {str(e)}")
+
+    if not licensed:
         raise HTTPException(status_code=403, detail="Invalid or expired license token.")
 
     job_id = str(uuid.uuid4())
