@@ -124,24 +124,25 @@ async def debug_db():
 async def start_simulation(payload: SimulationRequest, background_tasks: BackgroundTasks):
     try:
         licensed = verify_license(payload.license_code)
+        if not licensed:
+            raise HTTPException(status_code=403, detail="Invalid or expired license token.")
+
+        job_id = str(uuid.uuid4())
+
+        supabase.table("jobs").insert({
+            "id": job_id,
+            "status": "RUNNING",
+            "progress": 0,
+            "current_step": 0,
+            "drag_history": [],
+            "lift_history": [],
+            "log_stream": "Initializing matrices and invoking parallel Numba kernel compilation..."
+        }).execute()
+
+        background_tasks.add_task(async_simulation_worker, job_id, payload)
+        return {"job_id": job_id, "status": "ACCEPTED"}
+
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"License check failed: {str(e)}")
-
-    if not licensed:
-        raise HTTPException(status_code=403, detail="Invalid or expired license token.")
-
-    job_id = str(uuid.uuid4())
-
-    supabase.table("jobs").insert({
-        "id": job_id,
-        "status": "RUNNING",
-        "progress": 0,
-        "current_step": 0,
-        "drag_history": [],
-        "lift_history": [],
-        "log_stream": "Initializing matrices and invoking parallel Numba kernel compilation..."
-    }).execute()
-
-    background_tasks.add_task(async_simulation_worker, job_id, payload)
-
-    return {"job_id": job_id, "status": "ACCEPTED"}
+        raise HTTPException(status_code=500, detail=f"Simulation start error: {str(e)}")
