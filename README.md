@@ -15,7 +15,12 @@ Standard Single-Relaxation-Time (SRT) BGK models suffer from severe numerical in
 
 KPBM introduces a field-local dynamic modification of the relaxation time $\tau$:
 
-$$\tau_{\text{local}} = \tau_0 \left(1 + \alpha \cdot \frac{\text{shear\_magnitude} \cdot |\mathbf{u}|^2}{U_\infty^3}\right)$$
+$$\tau_{\text{local}} = \tau_0 \left(1 + \alpha \cdot \frac{\text{shear\_magnitude} \cdot |\mathbf{u}|^2}{U_{\infty}^3}\right)$$
+
+### Key Characteristics:
+* **Targeted Stabilization:** By coupling local vorticity/shear directly with the velocity magnitude squared ($|\mathbf{u}|^2$), dissipation is injected exclusively into turbulent, high-energy wake zones where SRT instabilities originate.
+* **Quiescent Flow Preservation:** Calm, laminar regions remain strictly at baseline $\tau_0$, preserving far-field kinetic accuracy without global damping.
+* **Zero GPU Hardware Dependency:** Designed to run fully parallelized across multi-core CPUs via Numba JIT execution, eliminating CUDA toolchain requirements for quick numerical prototyping.
 
 ### Key Characteristics:
 * **Targeted Stabilization:** By coupling local vorticity/shear directly with the velocity magnitude squared ($|\mathbf{u}|^2$), dissipation is injected exclusively into turbulent, high-energy wake zones where SRT instabilities originate.
