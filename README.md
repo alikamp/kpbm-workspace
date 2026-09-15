@@ -3,7 +3,7 @@
 
 A 3D Lattice Boltzmann (D3Q19) fluid solver featuring the Kinetic-Pressure
 Ballooning Model (KPBM): a field-local collision stabilizer that extends the
-numerical stability of Single-Relaxation-Time (SRT) BGK schemes.
+numerical stability of Single-Relaxation-Time (SRT) BGK regimes.
 
 Written in Python with Numba compilation (`@njit`, `prange`, `fastmath`) for
 CPU acceleration on transient 3D wake simulations. No GPU required.
