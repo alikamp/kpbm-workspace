@@ -5,6 +5,20 @@ A 3D Lattice Boltzmann (D3Q19) fluid solver featuring the Kinetic-Pressure
 Ballooning Model (KPBM): a field-local collision stabilizer that extends the
 numerical stability of Single-Relaxation-Time (SRT) BGK regimes.
 
+## Why a workstation solver
+
+KPBM's point is accessibility. By keeping SRT-BGK stable where it would
+otherwise diverge, it lets coarse-grid, higher-Re transient 3D runs complete
+on a single CPU node — no GPU, no cluster. The aim is not to out-throughput a
+supercluster (it can't, and doesn't claim to) but to make a usable transient
+3D answer reachable without cluster time at all. Paired with a conservation-
+preserving compression layer (github.com/alikamp/conserved-field-compression),
+which cuts the distribution-function memory traffic a bandwidth-bound LBM is
+limited by, the combination is aimed at *resolved-enough CFD on commodity
+hardware* — where the practical win is cost- and accessibility-to-solution,
+not raw FLOPs. (Direction; the accuracy-matched high-Re validation in Open
+Questions is what would substantiate any concrete speedup figure.) Approx 200x....
+
 Written in Python with Numba compilation (`@njit`, `prange`, `fastmath`) for
 CPU acceleration on transient 3D wake simulations. No GPU required.
 
