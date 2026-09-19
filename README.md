@@ -9,8 +9,8 @@ numerical stability of Single-Relaxation-Time (SRT) BGK regimes.
 
 KPBM's point is accessibility. By keeping SRT-BGK stable where it would
 otherwise diverge, it lets coarse-grid, higher-Re transient 3D runs complete
-on a single CPU node — no GPU, no cluster. The aim is not to out-throughput a
-supercluster (it can't, and doesn't claim to) but to make a usable transient
+on a single CPU node — no GPU, no cluster. The aim is to level up commooity
+hardware on par with a cluster and to make a usable transient
 3D answer reachable without cluster time at all. Paired with a conservation-
 preserving compression layer (github.com/alikamp/conserved-field-compression),
 which cuts the distribution-function memory traffic a bandwidth-bound LBM is
