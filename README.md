@@ -17,7 +17,7 @@ which cuts the distribution-function memory traffic a bandwidth-bound LBM is
 limited by, the combination is aimed at *resolved-enough CFD on commodity
 hardware* — where the practical win is cost- and accessibility-to-solution,
 not raw FLOPs. (Direction; the accuracy-matched high-Re validation in Open
-Questions is what would substantiate any concrete speedup figure.) Approx 200x....
+Questions is what would substantiate any concrete speedup figure.) Approx 35x..
 
 Written in Python with Numba compilation (`@njit`, `prange`, `fastmath`) for
 CPU acceleration on transient 3D wake simulations. No GPU required.
