@@ -110,7 +110,7 @@ is the signature of a viscosity-based stabilizer: the prior stabilizes by adding
 dissipation, and that dissipation lowers drag even here at Re = 300, where the
 flow is stable at $\alpha = 0$ and needs no stabilizing.
 
-So this sweep measures the prior's *cost* on a flow that did not require it  --
+So this sweep measures the prior's *cost* on a flow that did not require it --
 not its benefit on one that would otherwise diverge. For a case that does
 require it, see Section 3.
 
@@ -141,9 +141,30 @@ not uniquely necessary here -- it is the more accurate way to spend the same
 dissipation budget, placing it selectively rather than globally. That is a
 narrower claim than "required," and it is the one the data supports.
 
-Note the reference in this section is an uncompressed run of this same solver,
-not a literature value. It is a self-consistency result, not an accuracy
-validation.
+Two caveats on this section. The reference is an uncompressed run of this same
+solver, not a literature value -- it is a self-consistency result, not an
+accuracy validation. And unlike Sections 1 and 2, **the code and data behind
+this section are not yet in this repo**; the runs were done in a separate
+notebook against ZFP. Treat these figures as reported rather than reproducible
+until that lands.
+
+### Reproducing Sections 1 and 2
+
+Both tables come out of `kpbm_validation_3d.py` on a commodity CPU, no GPU.
+Last reproduced October 2026 (numpy 2.5.3, numba 0.68.0):
+
+| Table | Config | Result | Wall time |
+|---|---|---|---|
+| Section 2, all four rows | `SMALL` (120x60x60, 2000 steps) | exact match | ~48 s per $\alpha$ |
+| Section 1, 9 cells / D | the $\alpha = 0$ row of that sweep, $D = 9$ | $C_d = 1.078 \pm 0.028$ | ~48 s |
+| Section 1, 15 cells / D | `MEDIUM` (180x100x100, 4000 steps), $D = 15$ | $C_d = 0.829 \pm 0.019$ | ~8 min |
+
+The repo carries two D3Q19 implementations: the kernel in `kpbm_core_3d.py`
+and the self-contained one inside the validation harness. They agree -- the
+harness reports $C_d = 1.078 \pm 0.028$ at $\alpha = 0$, and
+`python kpbm_core_3d.py` independently reports the same to three decimals. So
+the validated numbers describe the shipped kernel. If you modify either, re-run
+both and check they still agree.
 
 ## Open questions
 
@@ -175,6 +196,7 @@ from a working stabilizer into a characterized method:
 
 ```
 kpbm_core_3d.py        # D3Q19 LBM kernel, KPBM field-local tau, sphere driver
+requirements.txt       # numpy, numba, scipy, matplotlib
 kpbm_validation_3d.py  # validation harness: sphere drag vs literature, alpha-sweep
 validated_lbm.py       # 2D D2Q9 cylinder baseline, Strouhal via FFT
 LICENSE                # MIT
@@ -183,8 +205,11 @@ LICENSE                # MIT
 ## Getting started
 
 ```bash
-pip install numpy numba scipy matplotlib
+pip install -r requirements.txt
 ```
+
+`numba` is not optional -- the collision and streaming kernels are
+`@njit(parallel=True)`, and without it a 3D transient run is unusable.
 
 **The validation harness -- this is what produced the tables in Validation
 Sections 1 and 2:**

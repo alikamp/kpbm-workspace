@@ -1,13 +1,16 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
 .env
+.venv/
+venv/
 
-# Node
-node_modules/
-dist/
-.env
-.env.local
+# Numba cache
+.numba_cache/
+
+# Simulation output written by kpbm_validation_3d.py
+kpbm_validation/
 
 # Misc
 .DS_Store

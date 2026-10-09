@@ -327,8 +327,10 @@ def main():
        physics) or climbs (KPBM = numerical dissipation).
 """)
 
-    cfg = CONFIGS["SMALL"]     # SMALL for the sweep: fast, survives Colab
-    print(f"  Using config: MEDIUM (baseline first; sweep disabled)\n")
+    cfg_name = "SMALL"         # SMALL for the sweep: fast, survives Colab
+    cfg = CONFIGS[cfg_name]
+    print(f"  Using config: {cfg_name}  "
+          f"({cfg['Lx']}x{cfg['Ly']}x{cfg['Lz']}, {cfg['N_steps']} steps)\n")
 
     results = []
 

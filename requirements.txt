@@ -1,0 +1,15 @@
+# KPBM — runtime dependencies
+#
+# numba does the heavy lifting: the D3Q19 collision/streaming kernels are
+# @njit(parallel=True), so without it the solver falls back to interpreted
+# NumPy and is unusable for 3D transient runs.
+#
+# scipy and matplotlib are used by validated_lbm.py only (FFT for the
+# Strouhal number, and figure output).
+#
+# Verified working on the versions in the right-hand column.
+
+numpy>=1.24        # tested: 2.5.3
+numba>=0.57        # tested: 0.68.0
+scipy>=1.10        # tested: 1.18.1
+matplotlib>=3.6    # tested: 3.11.2
