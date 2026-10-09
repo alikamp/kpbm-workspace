@@ -174,9 +174,10 @@ from a working stabilizer into a characterized method:
 ## Project structure
 
 ```
-kpbm_core_3d.py   # D3Q19 LBM kernel, KPBM field-local tau, sphere driver
-validated_lbm.py  # 2D D2Q9 cylinder baseline, Strouhal via FFT
-LICENSE           # MIT
+kpbm_core_3d.py        # D3Q19 LBM kernel, KPBM field-local tau, sphere driver
+kpbm_validation_3d.py  # validation harness: sphere drag vs literature, alpha-sweep
+validated_lbm.py       # 2D D2Q9 cylinder baseline, Strouhal via FFT
+LICENSE                # MIT
 ```
 
 ## Getting started
@@ -185,15 +186,24 @@ LICENSE           # MIT
 pip install numpy numba scipy matplotlib
 ```
 
-**3D sphere, KPBM off -- the base-solver check in Validation Section 1:**
+**The validation harness -- this is what produced the tables in Validation
+Sections 1 and 2:**
+
+```bash
+python kpbm_validation_3d.py
+```
+
+Runs a sphere at Re = 300 with $\alpha = 0$ and reports $C_d$ against the
+literature value ($C_d \approx 0.65$, Roos & Willmarth 1971), then sweeps
+$\alpha$. Expect a resolution offset on coarse grids -- see Section 1.
+
+**A single quick check of the kernel alone:**
 
 ```bash
 python kpbm_core_3d.py
 ```
 
-Runs a sphere at Re = 300, $\alpha = 0$ on a 120x60x60 lattice for 2000 steps
-and reports $C_d$ against the literature value. Expect a resolution offset at
-this grid -- see Section 1.
+Sphere at Re = 300, $\alpha = 0$ on a 120x60x60 lattice for 2000 steps.
 
 **2D cylinder baseline:**
 
